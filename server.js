@@ -2,7 +2,7 @@ var fs= require("fs"),
 	watchTree= require("watch-tree"),
 	csv= require("csv"),
 	flume= require("flume"),
-	marketOrderDepackCsv= require("./parser").MarketOrderDepackCsv
+	marketOrderDepackCsv= require("./parser").MarketOrderDepackCsvRaw
 	optimist= require("optimist")
 		.usage("Usage: $0 -target [target] -p [port] -d [maildir]")
 		.options("target", {alias: "t", default: "127.0.0.1", describe: "Flume target host to send to."})
