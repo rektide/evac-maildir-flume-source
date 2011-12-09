@@ -1,0 +1,21 @@
+{
+	"name": "evec-flume",
+	"description": "dump EVE-Central into flume",
+	"version": "1.0.0",
+	"keywords": ["eve-online", "streaming", "flume", "eve-central"],
+	"maintainers": [{
+		"name": "Matthew 'rektide' Fowle",
+		"email": "rektide@voodoowarez.com",
+		"web": "http://voodoowarez.com"
+	}],
+	"homepage": "http://voodoowarez.com/evec-flume",
+	"implements": ["CommonJS/Modules/1.0"],
+	"engines": { "node": ">=0.6.0" },
+	"dependencies": {
+		"csv": ">=0.0.10",
+		"flume": ">=1.0.0",
+		"watch-tree": ">=0.1.0",
+		"optimist": ">=0.2.8"
+	},
+	"repository": {"type": "git", "url": "http://git.voodoowarez.com/evec-flume.git"}
+}
