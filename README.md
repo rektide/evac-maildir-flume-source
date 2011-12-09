@@ -14,8 +14,8 @@ Hi, this is EVE-Central Maildir Flume Source.
 EVE-Central Maildir Flume Source will help. It monitors a maildir, csv parses incoming mail,
 and if of the expected format it will submit the order information to Flume.
 
-# http://eve-online.com
-# http://eve-central.com/home/software.html
-# http://eve-central.com/home/develop.html#smtp
-# amongst many, http://dovecot.org
-# https://cwiki.apache.org/FLUME/
+1. http://eve-online.com
+2. http://eve-central.com/home/software.html
+3. http://eve-central.com/home/develop.html#smtp
+4. amongst many, http://dovecot.org
+5. https://cwiki.apache.org/FLUME/
