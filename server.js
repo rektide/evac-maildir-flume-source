@@ -2,7 +2,7 @@ var fs= require("fs"),
 	watchTree= require("watch-tree"),
 	csv= require("csv"),
 	flume= require("flume"),
-	moParser= require("./parser").MarketOrderParser
+	marketOrderDepackCsv= require("./parser").MarketOrderDepackCsv
 	optimist= require("optimist")
 		.usage("Usage: $0 -target [target] -p [port] -d [maildir]")
 		.options("target", {alias: "t", default: "127.0.0.1", describe: "Flume target host to send to."})
@@ -45,28 +45,31 @@ var maildirWatch= watchTree.watchTree(maildir,function(event){
 	var isDir= event.isDirectory(),
 	  isCreate= event.isCreate(),
 	  name= event.name
-	//console.log("watched",name,isDir,isCreate)
 	if(!event.isDirectory() && event.isCreate()) {
 
-		// prep parser
-		var parser= csv(),
-		  notHot= 0
-		parser.on("data",function(data,index){
-			if(data.length != 14){ // the one data-consistency check we'll bother making
+		// prep csv parser
+		var notHot = 0,
+		  parser= csv()
+		  .transform(marketOrderDepackCsv)
+		  .on("data",function(data,index){
+			if(!data) {
 				//console.log(data)
 				++notHot
 				return
 			}
-			var entity= moParser(data)
-			flumeLogger.log(entity)
-		})
-		parser.on("end",function(count){
+			console.log(data)
+			//flumeLogger.log(data)
+		  })
+		  .on("end",function(count){
 			var ungood= notHot == 0 ? "" : notHot+" bad entries"
 			console.log("extracted "+count+" entries from "+name+". "+ungood)
-		})
+		  })
+		  .on("error",function(error){
+			console.error("csv parser error during",name,error)
+		  })
 
 		// read in headers first, then relay to csv
-		var stream= fs.createReadStream(name,{encoding:'ascii',bufferSize:64*1024}),
+		var stream= fs.createReadStream(name,{encoding:'utf8',bufferSize:64*1024}),
 		  terminalEol= false,
 		  almostPrime= false,
 		  fired= false
@@ -76,10 +79,10 @@ var maildirWatch= watchTree.watchTree(maildir,function(event){
 			{
 				var firstStart= data.indexOf("\n",bodyStart)+1 // post-csv header line
 				if(firstStart >= 0) {
-					var remainder= data.substring(firstStart)
-					parser.from(remainder) // will fire nextTick, before stream, right? :)
 					parser.fromStream(stream)
 					stream.removeListener("data",streamPrepper) // done prepping
+					var remainder= data.substring(firstStart) // feed in this chunk
+					stream.emit("data",remainder)
 					fired= true
 				} else {
 					almostPrime= true
@@ -91,10 +94,6 @@ var maildirWatch= watchTree.watchTree(maildir,function(event){
 		stream.on("end", function(){
 			if(!fired)
 				console.error("never fired the csv parser during",name)
-		})
-
-		parser.on("error",function(error){
-			console.error("csv parser error during",name,error)
 		})
 	}
 })

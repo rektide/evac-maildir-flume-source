@@ -1,4 +1,7 @@
-exports.MarketOrderParser= function(data){
+exports.MarketOrderDepackCsv= function(data){
+	if(data.length != 14){ // the one data-consistency check we'll bother making
+		return
+	}
 	return {price:data[0],
 	  volRemaining:data[1],
 	  typeID:data[2],
