@@ -6,7 +6,7 @@ var fs= require("fs"),
 	optimist= require("optimist")
 		.usage("Usage: $0 -target [target] -p [port] -d [maildir]")
 		.options("target", {alias: "t", default: "127.0.0.1", describe: "Flume target host to send to."})
-		.options("port", {alias: "p", default: "37543", describe: "Port to send to."})
+		.options("port", {alias: "p", default: 37543, describe: "Port to send to."})
 		.options("maildir", {alias: "d", default: ".maildir", describe: "Mail directory to watch."})
 		.options("help", {alias: "h", describe: "Show usage help."}),
 	argv= optimist.argv
@@ -38,7 +38,7 @@ console.info("decided upon maildir:",maildir)
 
 var target= argv.target,
   port= argv.port
-var flumeLogger= new flume.FlumeLog(target,port)
+var flumeLogger= new flume.FlumeLog(target,port.toString())
 console.info("decided upon flume logger:",target+":"+port)
 
 var maildirWatch= watchTree.watchTree(maildir,function(event){
@@ -57,8 +57,8 @@ var maildirWatch= watchTree.watchTree(maildir,function(event){
 				++notHot
 				return
 			}
-			console.log(data)
-			//flumeLogger.log(data)
+			//console.log(data)
+			flumeLogger.log(data)
 		  })
 		  .on("end",function(count){
 			var ungood= notHot == 0 ? "" : notHot+" bad entries"
