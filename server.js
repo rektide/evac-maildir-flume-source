@@ -38,7 +38,7 @@ console.info("decided upon maildir:",maildir)
 
 var target= argv.target,
   port= argv.port
-var flumeLogger= new flume.FlumeLog(target,port.toString())
+var flumeLogger= new flume.FlumeLog(target,port)
 console.info("decided upon flume logger:",target+":"+port)
 
 var maildirWatch= watchTree.watchTree(maildir,function(event){
@@ -58,7 +58,7 @@ var maildirWatch= watchTree.watchTree(maildir,function(event){
 				return
 			}
 			//console.log(data)
-			flumeLogger.log(data)
+			flumeLogger.log("evec-order",data)
 		  })
 		  .on("end",function(count){
 			var ungood= notHot == 0 ? "" : notHot+" bad entries"
